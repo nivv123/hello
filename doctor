@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 
-app = Flask(__name__)
+app = Flask(__name__)  # Correct the use of __name__ instead of _name_
 
 # Sample data representing doctors
 doctors = [
@@ -57,5 +57,5 @@ def book_appointment():
     else:
         return jsonify({"error": "Doctor not found"}), 404
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # Correct the use of __name__ instead of _name_
     app.run(debug=True)
