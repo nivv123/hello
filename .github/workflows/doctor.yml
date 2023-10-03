@@ -1,0 +1,61 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)  # Correct the use of __name__ instead of _name_
+
+# Sample data representing doctors
+doctors = [
+    {
+        "id": 1,
+        "name": "Dr. John Doe",
+        "specialty": "Cardiologist",
+        "weekly_schedule": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "max_patients": 10,
+    },
+    {
+        "id": 2,
+        "name": "Dr. Jane Smith",
+        "specialty": "Dermatologist",
+        "weekly_schedule": ["Monday", "Wednesday", "Friday"],
+        "max_patients": 8,
+    },
+]
+
+# Sample data representing appointments
+appointments = []
+
+# API endpoint to list all doctors
+@app.route('/doctors', methods=['GET'])
+def list_doctors():
+    return jsonify(doctors)
+
+# API endpoint to get details of a specific doctor
+@app.route('/doctors/<int:doctor_id>', methods=['GET'])
+def get_doctor(doctor_id):
+    doctor = next((doc for doc in doctors if doc['id'] == doctor_id), None)
+    if doctor:
+        return jsonify(doctor)
+    else:
+        return jsonify({"error": "Doctor not found"}), 404
+
+# API endpoint to book an appointment with a doctor
+@app.route('/appointments', methods=['POST'])
+def book_appointment():
+    data = request.get_json()
+    doctor_id = data.get('doctor_id')
+    patient_name = data.get('patient_name')
+
+    doctor = next((doc for doc in doctors if doc['id'] == doctor_id), None)
+    if doctor:
+        if len(appointments) < doctor['max_patients']:
+            appointments.append({
+                "doctor_id": doctor_id,
+                "patient_name": patient_name,
+            })
+            return jsonify({"message": "Appointment booked successfully"})
+        else:
+            return jsonify({"error": "Doctor is fully booked for the week"}), 400
+    else:
+        return jsonify({"error": "Doctor not found"}), 404
+
+if __name__ == '__main__':  # Correct the use of __name__ instead of _name_
+    app.run(debug=True)
