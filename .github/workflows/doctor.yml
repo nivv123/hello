@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify
 app = Flask(__name__)  # Correct the use of __name__ instead of _name_
 
 # Sample data representing doctors
-doctors = [
+doctors=[
     {
         "id": 1,
         "name": "Dr. John Doe",
